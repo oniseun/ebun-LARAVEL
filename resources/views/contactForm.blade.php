@@ -8,7 +8,7 @@
             <h1 style="color:white;"><img src="/img/logo.png" width="60" height="60"/> Contact us</h1>
             <br>  
             <div class="" style="padding: 20px ; background: white; border-radius: 10px; ">
-                                <form  method="post" action="/finalize/contact" autocomplete="off">
+                                <form  method="post" class="reset-on-success" action="/finalize/contact" autocomplete="off">
                                     @csrf
                                     <h3>Send us your feedback or complaint</h3><br>
                                     <input type="email" 

@@ -12,20 +12,25 @@ class ProfileController extends Controller
 
     }
     
-    public function ajaxMiniStats(){
-    
-        $balance = Wallet::balance(Auth::id());
-        $userStats = Site::user_stats(Auth::id());
-        
-        return view('miniStats',compact('balance','userStats'));
-    }
-    
-    public function profileForms(){
+    public function profileInfo(){
     
         $userInfo = Auth::currentUser();
-        return view('profileForm',compact('userInfo'));
+        return view('user.changeInfoForm',compact('userInfo'));
     }
+
+
+    public function profilePassword(){
     
+        $userInfo = Auth::currentUser();
+        return view('user.changePasswordForm',compact('userInfo'));
+    }
+
+    public function profilePhoto(){
+    
+        $userInfo = Auth::currentUser();
+        return view('user.changePhotoForm',compact('userInfo'));
+    }
+
     public function updateInfo(){
 
         $former_email = Auth::currentUser()->email;
@@ -33,7 +38,6 @@ class ProfileController extends Controller
         if (\Request::has(Profile::$updateInfoFillable) && Profile::update_info(Auth::id())) {
 
             $successMsg = 'Updated profile information  on '.date("d/m/Y h:i:s");
-            Activities::create(Auth::id(),$successMsg, 'cl_members');
 
             if($former_email !== \Request::only(Profile::$updateInfoFillable)['email'] )
             {
@@ -60,9 +64,7 @@ class ProfileController extends Controller
             }
             else
              {  
-                 Profile::change_password(Auth::id())   ;
-                 Auth::create_session(Auth::currentUser()->email); // recreate session          
-                $successMsg = 'Updated password  on '.date("d/m/Y h:i:s");
+                 Profile::change_password(Auth::id())   ;     
                 
                 echo ajax_alert('success',' Password Updated Successfully');
             }
@@ -78,8 +80,6 @@ class ProfileController extends Controller
     
         if (\Request::has(Profile::$updatePhotoFillable) && Profile::change_photo(Auth::id())) {
 
-            $successMsg = 'Updated Photo  on '.date("d/m/Y h:i:s");
-            Activities::create(Auth::id(),$successMsg, 'cl_members');
             
             echo ajax_alert('success',' Photo Updated Successfully');
         }

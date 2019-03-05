@@ -112,6 +112,7 @@ class AuthController extends Controller
 
         if(Auth::register_user())
         {
+            extract(\Request::only(Auth::$registerFormFillable));
             $redirect_url = \Request::has('redirect_url') ? \Request::input('redirect_url') : '/admin/dashboard';
 
             Auth::send_verification_mail($email);

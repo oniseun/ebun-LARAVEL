@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Index;
 
 class IndexController extends Controller
 {
@@ -28,14 +29,14 @@ class IndexController extends Controller
     {
         if(!\Request::has(Index::$contactFormFillable))
         {
-        return back()->with('failure', "Error in your form fields, please check, make corrections and submit again");
+            echo ajax_alert('danger',  "Error in your form fields, please check, make corrections and submit again");
         exit;
         }
         if (Index::submit_contact_form()) {
-            return back()->with('success', "Your message has been sent!!");
+            echo ajax_alert('success', "Your message has been sent!!");
         } 
         else {
-            return back()->with('failure', "Error in your form fields, please check, make corrections and submit again");
+            echo ajax_alert('danger', "Error in your form fields, please check, make corrections and submit again");
         }
     }
 }

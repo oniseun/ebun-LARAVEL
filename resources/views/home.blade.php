@@ -12,6 +12,7 @@
         </div>
         <div class="col-md-4 col-md-offset-1" style="  margin-top: 50px;">
             <div style="border-radius: 10px;padding: 10px ; background: white; ">
+                @include('components.flashMessage')
                    <!-- Nav tabs -->
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" class="active"><a href="#register" aria-controls="register" role="tab" data-toggle="tab">Register</a></li>
@@ -40,7 +41,7 @@
                                 type="password" name="repeat_password" value="" autocomplete="off" />
                                 <br>
 
-                                 <button type="submit" class="btn btn-danger btn-lg btn-block ajax-submit">REGISTER NOW
+                                 <button type="submit" class="btn btn-danger btn-lg btn-block">REGISTER NOW
                                 </button><br>
 
                                 <p class="ajax-message"></p>
@@ -60,7 +61,7 @@
                                     name="password" value="" autocomplete="off" placeholder="Password"/>
                                     <br>
 
-                                    <button type="submit" class="btn btn-success btn-lg btn-block ajax-submit">SIGN IN
+                                    <button type="submit" class="btn btn-success btn-lg btn-block">SIGN IN
                                     </button>
                                     <br>
 
