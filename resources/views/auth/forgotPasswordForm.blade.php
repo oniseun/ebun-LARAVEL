@@ -11,7 +11,7 @@
       </div>
 
       <div class="panel-body"  style="padding: 20px ; background: white; border-radius: 10px; ">
-         <form  action="/finalize/reset" method="post" autocomplete="off" >
+         <form  action="/finalize/reset" class="reset-on-success" method="post" autocomplete="off" >
         @csrf
          <div class="ajax-message">
          <p>

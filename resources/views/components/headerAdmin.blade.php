@@ -1,6 +1,6 @@
 <?php
 
-$userInfo = Auth::currentUser();
+$userInfo = \App\Auth::currentUser();
 
 ?>
 <nav class="navbar navbar-default navbar-fixed-top"  id="top" role="banner">
@@ -18,9 +18,9 @@ $userInfo = Auth::currentUser();
         <ul class="nav navbar-nav">
         <li role="separator" class="divider"></li>
           <li  class="<?=mark_link('admin/dashboard')?>"><a href="/admin/dashboard"><i class="fa fa-gift"></i> Dashboard</a></li>
-          <li class="<?=mark_link('admin/profile')?>"><a href="/admin/profile"><i class="fa fa-user-secret"></i> Edit Profile Info</a></li>
-          <li  class="<?=mark_link('admin/change/picture')?>"><a href="/admin/change/picture"><i class="fa fa-camera"></i> Change Picture</a></li>
-          <li  class="<?=mark_link('admin/change/password')?>"><a href="/admin/change/password"><i class="fa fa-circle"></i> Change Password</a></li>
+          <li class="<?=mark_link('admin/my/profile')?>"><a href="/admin/my/profile"><i class="fa fa-user-secret"></i> Edit Profile Info</a></li>
+          <li  class="<?=mark_link('admin/my/photo')?>"><a href="/admin/my/photo"><i class="fa fa-camera"></i> Change Picture</a></li>
+          <li  class="<?=mark_link('admin/my/password')?>"><a href="/admin/my/password"><i class="fa fa-circle"></i> Change Password</a></li>
           <li class="<?=mark_link('admin/logout')?>"><a href="/admin/logout"><i class="fa fa-power-off"></i> Logout</a></li>
 
           
@@ -38,7 +38,7 @@ $userInfo = Auth::currentUser();
               </button> -->
 
 
-            <li class="<?=mark_link('admin/profile')?>"><a href="/admin/profile"><i class="fa fa-user-secret"></i> {{ $userInfo->fullname }}</a></li>
+            <li class="<?=mark_link('admin/my/profile')?>"><a href="/admin/my/profile"><i class="fa fa-user-secret"></i> {{ $userInfo->fullname }}</a></li>
          
         </ul>
 

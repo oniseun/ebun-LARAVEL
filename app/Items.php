@@ -14,7 +14,7 @@ class Items extends Model
     }
     
 
-	public static function item_types()
+	public static function types()
 	{
         return \DB::table('eb_item_types')->get();
 	}

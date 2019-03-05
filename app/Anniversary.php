@@ -37,7 +37,7 @@ class Anniversary extends Model
 
 	
 
-	public static function anniversary_types()
+	public static function types()
 	{
         return \DB::table('eb_anniversary_types')->get();
 	}
@@ -45,7 +45,7 @@ class Anniversary extends Model
 
 	
 
-	public static function get_anniv_icon($anniv_type)
+	public static function get_icon($anniv_type)
 	{
         return \DB::table('eb_anniversary_types')->where('id',$anniv_type)->value('icon');
 	}
@@ -53,7 +53,7 @@ class Anniversary extends Model
 
 
 
-	public static function list($userID,$limit = 5)
+	public static function _list($userID,$limit = 5)
 	{
         return  \DB::table('eb_anniversaries')->where('creator_id',$userID)->orderBy('anniversary_date','DESC')->limit($limit)->get();
 

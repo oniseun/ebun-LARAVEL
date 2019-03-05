@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Auth;
+use App\Profile;
 
 class ProfileController extends Controller
 {
@@ -81,10 +83,10 @@ class ProfileController extends Controller
         if (\Request::has(Profile::$updatePhotoFillable) && Profile::change_photo(Auth::id())) {
 
             
-            echo ajax_alert('success',' Photo Updated Successfully');
+            return back()->with('success',' Photo Updated Successfully');
         }
         else {
-            echo ajax_alert('warning',' -- Error updating photo -- ');
+            return back()->with('failure',' -- Error updating photo -- ');
         }
     
     }

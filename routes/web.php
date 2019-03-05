@@ -25,7 +25,7 @@ Route::post('finalize/reset', 'AuthController@reset');
 Route::get('reset/password/{reset_code}', 'AuthController@resetPasswordForm')->where('reset_code', '[A-Za-z0-9_\-]+');
 Route::post('finalize/reset/password', 'AuthController@resetPassword');
 Route::get('finalize/verify/email/{verify_code}', 'AuthController@verifyEmail')->where('verify_code', '[A-Za-z0-9_\-]+');
-
+Route::get('anniversary/{aID}', 'AnniversaryController@info')->where('aID', '[A-Za-z0-9_\-]+');
 
 
 Route::group(['prefix' => 'admin','middleware' =>'web.auth'], function () {//, 'middleware' => 'web.auth'
@@ -35,7 +35,17 @@ Route::group(['prefix' => 'admin','middleware' =>'web.auth'], function () {//, '
     })->where('any', '.*');
 
 
-Route::get('dashboard', 'ProfileController@dashboard');
+Route::get('dashboard', 'AnniversaryController@listView');
+Route::get('update/anniversary/{aID}', 'AnniversaryController@updateForm')->where('aID', '[A-Za-z0-9_\-]+');
+Route::get('remove/anniversary/{aID}', 'AnniversaryController@confirmDelete')->where('aID', '[A-Za-z0-9_\-]+');
+Route::post('finalize/update/anniversary', 'AnniversaryController@update');
+Route::post('finalize/remove/anniversary', 'AnniversaryController@remove');
+Route::post('finalize/add/anniversary', 'AnniversaryController@add');
+
+Route::post('finalize/add/item', 'ItemController@add');
+Route::post('finalize/deactivate/item', 'ItemController@deactivate');
+
+
 
 
 Route::get('my/profile', 'ProfileController@profileInfo');

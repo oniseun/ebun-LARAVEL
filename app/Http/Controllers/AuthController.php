@@ -127,7 +127,6 @@ class AuthController extends Controller
         
     public function logout(){
     
-        Activities::create(Auth::id(), 'Logged out of the platform');
         Auth::logout();
         return redirect('/home');
     
