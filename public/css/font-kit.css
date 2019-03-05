@@ -1,0 +1,185 @@
+
+/* 
+    Created on : Aug 11, 2015, 10:41:38 AM
+    Author     : Vic
+*/
+
+@viewport {  width: device-width;user-scalable:no;user-scalable:0;maximum-scale:1.0;initial-scale:1.0;}
+@-webkit-viewport { width: device-width; user-scalable:0;maximum-scale:1.0; initial-scale:1.0;}
+@-moz-viewport {  width: device-width;  user-scalable:no;}
+@-o-viewport {  width: device-width;  user-scalable:no;}
+
+@font-face 
+{
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Roboto-Regular'), local('Roboto-Regular'), 
+        url("fonts/roboto/Roboto-Regular.woff2") format('woff2'), 
+        url("fonts/roboto/Roboto-Regular.woff") format('woff'), 
+        url("fonts/roboto/Roboto-Regular.ttf") format('truetype'); 
+}
+
+@font-face 
+{
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 200;
+    src: local('Roboto-Thin'), local('Roboto-Thin'), 
+        url("fonts/roboto/Roboto-Thin.woff2") format('woff2'), 
+        url("fonts/roboto/Roboto-Thin.woff") format('woff'), 
+        url("fonts/roboto/Roboto-Thin.ttf") format('truetype'); 
+}
+  
+@font-face 
+{
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 300;
+    src: local('Roboto-Light'), local('Roboto-Light'), 
+        url("fonts/roboto/Roboto-Light.woff2") format('woff2'), 
+        url("fonts/roboto/Roboto-Light.woff") format('woff'), 
+        url("fonts/roboto/Roboto-Light.ttf") format('truetype'); 
+}
+  
+@font-face 
+{
+      font-family: 'Roboto';
+      font-style: normal;
+      font-weight: 500;
+      src: local('Roboto-Medium'), local('Roboto-Medium'), 
+          url("fonts/roboto/Roboto-Medium.woff2") format('woff2'), 
+          url("fonts/roboto/Roboto-Medium.woff") format('woff'), 
+          url("fonts/roboto/Roboto-Medium.ttf") format('truetype'); 
+}
+
+@font-face 
+{
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Roboto-Bold'), local('Roboto-Bold'), 
+        url("fonts/roboto/Roboto-Bold.woff2") format('woff2'),
+        url("fonts/roboto/Roboto-Bold.woff") format('woff'), 
+        url("fonts/roboto/Roboto-Bold.ttf") format('truetype'); 
+}
+  
+
+@font-face 
+{
+ 
+  font-family: 'Ubuntu Light';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Ubuntu-L-webfont'), local('Ubuntu-L-webfont'),
+      url("fonts/Ubuntu-L-webfont.woff") format('woff'),
+      url("fonts/Ubuntu-L-webfont.eot?#iefix") format('OpenType'),
+      url("fonts/Ubuntu-L-webfont.eot") format('OpenType'); 
+}
+
+@font-face 
+{
+ 
+  font-family: 'Ubuntu Regular';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Ubuntu-R-webfont.eot'), local('Ubuntu-R-webfont.eot'),
+      url("fonts/Ubuntu-R-webfont.woff") format('woff'),
+      url("fonts/Ubuntu-R-webfont.eot?#iefix") format('OpenType'),
+      url("fonts/Ubuntu-R-webfont.eot") format('OpenType'); 
+}
+
+@font-face 
+{
+    font-family: 'Source Sans';
+    font-style: normal;
+    src: local('SourceSansPro-Light'), local('SourceSansPro-Light'), 
+           url("fonts/SourceSansPro-Light.ttf") format('truetype'); 
+}
+
+@font-face 
+{
+    font-family: 'Century Gothic';
+    font-style: normal;
+    src: local('CenturyGothicRegular'), local('CenturyGothicRegular'), 
+           url("fonts/CenturyGothicRegular.ttf") format('truetype'); 
+}
+
+@font-face 
+{
+    font-family: 'ProximaNova';
+    font-style: normal;
+    font-weight: normal;
+    src: local('ProximaNova'), local('ProximaNova'),url("fonts/ProximaNova-Regular.otf?#iefix") format('OpenType'),
+      url("fonts/ProximaNova-Regular.otf") format('OpenType'); 
+}
+
+@font-face 
+{
+    font-family: 'Helvetica';
+    font-style: normal;
+    font-weight: normal;
+    src: local('HelveticaNeue-Thin'), local('HelveticaNeue-Thin'),url("fonts/HelveticaNeue-Thin.otf?#iefix") format('OpenType'),
+      url("fonts/HelveticaNeue-Thin.otf") format('OpenType'); 
+}
+
+@font-face 
+{
+    font-family: 'Helvetica';
+    font-style: italic;
+    font-weight: normal;
+    src: local('HelveticaNeue-ThinItalic'), local('HelveticaNeue-ThinItalic'),url("fonts/HelveticaNeue-ThinItalic.otf?#iefix") format('OpenType'),
+      url("fonts/HelveticaNeue-ThinItalic.otf.otf") format('OpenType'); 
+}
+
+@font-face 
+{
+    font-family: 'and_black';
+    font-style: normal;
+    font-weight: 400;
+    src: url("fonts/and_black.eot");
+    /* For IE6-8 */
+    src: local('and_black'), local('and_black'),  
+      url("fonts/and_black.woff") format('woff'), 
+      url("fonts/and_black.ttf") format('truetype'); 
+}
+
+.font-proxima
+{
+    font-family: "ProximaNova",Helvetica, Arial;
+}
+
+.font-and_black
+{
+    font-family: "and_black",Helvetica, Arial;
+}
+
+.font-roboto
+{
+    font-family: "Roboto",Helvetica, Arial;
+}
+.font-helvetica
+{
+    font-family: "Helvetica",Helvetica, Arial;
+}
+
+.font-source-sans
+{
+    font-family: "Source Sans",Helvetica, Arial;
+}
+.font-century-gothic
+{
+    font-family: "Century Gothic",Helvetica, Arial;
+}
+.font-ubuntu-regular
+{
+    font-family: "Ubuntu Regular",Helvetica, Arial;
+}
+
+.font-ubuntu-light
+{
+    font-family: "Ubuntu Light",Helvetica, Arial;
+}
+
+
+\
