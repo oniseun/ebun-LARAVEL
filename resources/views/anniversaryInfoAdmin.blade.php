@@ -1,4 +1,4 @@
-@extends('master.publicPage')
+@extends('master.adminPage')
 @section('title')
 Hey there, {{ $creatorInfo->fullname }}'s {{ ucfirst($aInfo->title) }} 
 is coming up on {{ date("D d, F Y ",strtotime($aInfo->anniversary_date)) }}, buy them gifts on EBUN
@@ -27,17 +27,8 @@ buy them gifts on EBUN" />
 <meta property="og:description" content="{{ Illuminate\Support\Str::limit($aInfo->description,200) }}" />
 
 @endsection
-@section('styles')
 
-.page-background
-{
-  background-image: url(/img/anniv-tile.jpg);
-    background-repeat: repeat;
-    background-position: center ; 
-    opacity: 1;  
-}
 
-@endsection
 @section('body')
 
 <div class="col-md-8">
@@ -152,14 +143,17 @@ buy them gifts on EBUN" />
                 <?php
                 $remaining_days = ceil((strtotime($aInfo->anniversary_date) - time())/86400);
                 ?>
-                      @if(!App\Items::has_deactivated($aInfo->id) && $remaining_days > 2 )                                                                    
+                      @if(!App\Items::has_deactivated($aInfo->id) && $remaining_days > 2 )
+              
+                              @if(App\Auth::id() !== $aInfo->creator_id)                                      
 
-                          <button type="button" href="#anniv-item-{{ $aInfo->id }}"                                        
-                            class="btn btn-danger" data-toggle="modal" data-target="#anniv-item-{{ $aInfo->id }}">
-                          <i class="fa fa-check-circle"></i> 
-                        Buy for {{ $aInfo->fullname }}
-                        </button>
+                                  <button type="button" href="#anniv-item-{{ $aInfo->id }}"                                        
+                                    class="btn btn-danger" data-toggle="modal" data-target="#anniv-item-{{ $aInfo->id }}">
+                                  <i class="fa fa-check-circle"></i> 
+                                Buy for {{ $aInfo->fullname }}
+                                </button>
 
+                                @endif
 
                       @elseif(!App\Items::has_deactivated($gift->id) && $remaining_days <= 2 )
                       
@@ -268,8 +262,80 @@ buy them gifts on EBUN" />
 
 @endforeach
 
+
+
+
+
       </div>
-   
+     
+      @if(!App\Anniversary::expired($aInfo->id) && App\Auth::id() == $aInfo->creator_id && App\Items::data_count($aInfo->id) < 50)
+
+
+      <button  class=" btn btn-default btn-block" href="#add-item-form"  class="btn btn-danger" data-toggle="modal" data-target="#add-item-form"> <i class="fa fa-gift" aria-hidden="true"></i> Add more gifts </button>
+
+            <!-- start modal for item #myModalitem{{ $aInfo->id }} -->
+<div class="modal fade" id="add-item-form" tabindex="-1" role="dialog" aria-labelledby="add-item-form-label">
+<div class="modal-dialog modal-sm" role="document">
+  <div class="modal-content">
+
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <h4 class="modal-title" id="add-item-form-label">Add Gift Item</small></h4>
+    </div>
+
+    <div class="modal-body">
+      <div class="row">
+          <form  method="post" action="/admin/finalize/add/item">
+            @csrf
+              <input  type="hidden" name="anniv_id" value="{{ $aInfo->id }}"  />
+
+              <div class="col-lg-12">
+
+              <div class="input-group">
+                <span class="input-group-addon" id="basic-addon4">
+                Gift type
+                </span>
+                  <select name="item_type" class="form-control " aria-describedby="basic-addon4">
+                  <option value=""></option>
+                  @foreach ($itemTypes as $iTypes)
+
+                      <option value="{{ $iTypes->id }}">{{ $iTypes->description }}</option>";
+                  
+                  @endforeach
+                  </select> <br>
+              </div><br>
+
+                <input placeholder="Brief description of the gift" type="text" 
+                              class="form-control"
+                              name="item_description" value="" autocomplete="off" /><br>
+
+                <div class="input-group">
+                <span class="input-group-addon" id="basic-addon3">
+                <i class="fa fa-globe" aria-hidden="true"></i> Link
+                </span>
+                <input type="text" class="form-control" placeholder="Web Link to gift  (optional) "
+                name="item_link" aria-describedby="basic-addon3">
+              </div>
+                            
+              </div>
+
+
+              <div class="col-lg-12">
+                <p class="ajax-message"></p>
+                <br>
+                  <button class="btn btn-success ajax-submit">Add Gift</button>                               
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                
+              </div>
+              
+          </form>
+      </div>
+</div>
+</div>
+</div>
+</div>
+
+@endif
 
 
 

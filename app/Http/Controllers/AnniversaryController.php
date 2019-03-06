@@ -17,9 +17,20 @@ class AnniversaryController extends Controller
 
     public function info($aID)
     {
-        $info = Anniversary::info($aID);
-        $giftItems = Items::data_list($aID);
-        return view('anniversaryInfo',compact('info','giftItems'));
+        $aInfo = Anniversary::info($aID);
+        $giftItems = Items::data_list($aInfo->id);
+        $itemTypes = Items::types();
+        $creatorInfo = \App\Profile::user_info($aInfo->creator_id);
+        $countries = \App\Site::country_list();
+        $aIcon = \App\Anniversary::get_icon($aInfo->type);
+        if(Auth::check())
+        {
+            return view('anniversaryInfoAdmin',compact('aInfo','giftItems','countries','aIcon','creatorInfo','itemTypes'));
+        }
+        else
+        {
+            return view('anniversaryInfo',compact('aInfo','giftItems','countries','aIcon','creatorInfo','itemTypes'));
+        }
     }
 
     public function updateForm($aID)

@@ -1,13 +1,12 @@
 <?php
-use App\Items;
-$itemTypes = Items::types();
+$itemTypes = App\Items::types();
 
 ?>
 <html>
     <head>
         <title>@yield('title') | EBUN Dashboard</title>
-        <link rel="manifest" href="manifest.json">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+        @yield('meta')
     <!--Core CSS -->
    <link rel="stylesheet" href="/css/bootstrap.min.css"/>  
    <link rel="stylesheet" href="/css/font-awesome.css"/> 
@@ -130,7 +129,7 @@ $(function(){
               
                  $item_options.="<option value=\"{$type->id}\">{$type->description}</option>";
               
-            endforeach;
+        endforeach;
                                         
 
         ?>
@@ -166,7 +165,7 @@ $(function(){
 
                             '<select name="item_type[' + item_key + ']" class="form-control "  aria-describedby="basic-addon4">' +
                             '<option value=""> </option>'+
-                            '<?=$item_options?>'+
+                            '{!! $item_options !!}'+
                             '</select>'+
 
                       '</div>'+

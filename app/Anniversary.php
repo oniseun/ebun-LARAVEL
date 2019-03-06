@@ -154,7 +154,7 @@ class Anniversary extends Model
 	
 
 	
-	public function expired($annivID)
+	public static function expired($annivID)
 	{
 
         return \DB::table('eb_anniversaries')->whereRaw('UNIX_TIMESTAMP(anniversary_date) < '.time())->where('id',$annivID)->exists();
@@ -162,9 +162,5 @@ class Anniversary extends Model
 	}
 
 
-	public static function has_deactivated($annivID)
-	{
-        return \DB::table('eb_items')->where('activator_ip', \Request::ip())->where('anniv_id',$annivID)->exists();
-
-	}
+	
 }

@@ -24,11 +24,11 @@ class WebAuth
             else { 
                 if(\Request::path() == 'post')
                 {
-                    return redirect()->action('AuthController@loginForm')
+                    return redirect()->action('IndexController@home')
                         ->with('failure' , 'You must login to view this page');
                 }
                 else {
-                    return redirect()->action('AuthController@loginForm')
+                    return redirect()->action('IndexController@home')
                         ->with(['failure' => 'You must login to view this page', 'redirect_url' => \Request::path()]);
                 }
                 

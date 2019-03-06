@@ -2,7 +2,7 @@
     <head>
         <title>@yield('title') | EBUN</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-        <link rel="manifest" href="manifest.json">
+        @yield('meta')
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
      <!--Core CSS -->
@@ -32,6 +32,8 @@
                 font-family: 'Roboto',Arial , sans-serif!important;
                 
             }
+
+  
             .page-background
 {
     background: url("/img/home-bg.jpg");
@@ -39,6 +41,20 @@
     background-position: center ; 
     opacity: 1;  
 }
+
+.white-box
+            {
+                background: #fff;
+                padding:15px;
+            }
+
+            .white-color
+            {
+                color:#fff;
+            }
+
+
+@yield('styles')
 
 </style>
 

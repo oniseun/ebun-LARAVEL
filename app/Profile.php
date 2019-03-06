@@ -56,4 +56,11 @@ public static function change_photo($userID)
 
 
 }
+
+public static function user_info($userID)
+{
+    return \DB::table('eb_profiles')->where('user_id',$userID)->first();
+
+}
+
 }

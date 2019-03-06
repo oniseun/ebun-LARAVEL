@@ -68,6 +68,12 @@ class Items extends Model
             return \DB::table('eb_items')->where('id',$itemID)->where('anniv_id',$annivID)->update($data);
 
 		    
+    }
+    
+    public static function has_deactivated($annivID)
+	{
+        return \DB::table('eb_items')->where('activator_ip', \Request::ip())->where('anniv_id',$annivID)->exists();
+
 	}
     
 }
