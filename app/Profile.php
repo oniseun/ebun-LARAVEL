@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Profile extends Model
 {
+    public static $errors = [];
     public static  $updateInfoFillable = ['fullname','phone','email'];
     public static  $updatePasswordFillable = ['new_password','confirm_password'];
     public static  $updatePhotoFillable = ['photo'];
@@ -62,5 +63,93 @@ public static function user_info($userID)
     return \DB::table('eb_profiles')->where('user_id',$userID)->first();
 
 }
+
+
+public function update_info_validate()
+{
+    $uid = \App\Auth::id();
+    $validate_rules = [
+        'fullname' =>'required|min:5|max:30',
+        'email' =>'required|email|unique:users,email,'.$uid.',id',
+        'phone' => 'nullable|digits_between:5,12|unique:eb_profiles,phone,'.$uid.',id',
+    
+
+
+    ];
+
+    $validate_messages =[];
+
+    $validator = \Validator::make(\Request::all(),$validate_rules,$validate_messages);
+
+    if($validator->fails())
+    {
+        self::$errors = '<br>* '.implode('<br>* ',$validator->errors()->all());
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+    
+    
+}
+
+public function update_password_validate()
+{
+
+    $validate_rules = [
+        'current_password' =>'required|min:5',
+        'new_password' => 'required|min:5|confirmed',
+    ];
+
+    $validate_messages =[];
+
+
+    $validator = \Validator::make(\Request::all(),$validate_rules,$validate_messages);
+
+    if($validator->fails())
+    {
+        self::$errors = '<br>* '.implode('<br>* ',$validator->errors()->all());
+        return false;
+    }
+    elseif(!\Hash::check(\Request::input('current_password'),\App\Auth::password()))
+    {
+        self::$errors = '<br>* Old password incorrect' ;
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+
+    
+    
+}
+
+
+ public function update_picture_validate()
+{
+    $validate_rules = [
+        'photo' => 'required|image|mimes:jpeg,png|max:5000|dimensions:min_width=200,max_width:200,min_height:200,max_height:200',
+
+    ];
+
+    $validate_messages =[];
+
+
+    $validator = \Validator::make(\Request::all(),$validate_rules,$validate_messages);
+
+    if($validator->fails())
+    {
+        self::$errors = '<br>* '.implode('<br>* ',$validator->errors()->all());
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+    
+}
+
 
 }

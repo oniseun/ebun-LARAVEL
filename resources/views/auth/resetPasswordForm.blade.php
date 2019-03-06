@@ -25,7 +25,7 @@
 
                             <input placeholder="Re-enter Password" 
                             class="form-control"
-                            type="password" name="repeat_password" value="" autocomplete="off" /><br>
+                            type="password" name="password_confirmation" value="" autocomplete="off" /><br>
 
 
 

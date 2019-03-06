@@ -38,7 +38,7 @@
                                 <br>
 
                                 <input placeholder="Re-enter Password" class="form-control input-lg"
-                                type="password" name="repeat_password" value="" autocomplete="off" />
+                                type="password" name="password_confirmation" value="" autocomplete="off" />
                                 <br>
 
                                  <button type="submit" class="btn btn-danger btn-lg btn-block">REGISTER NOW

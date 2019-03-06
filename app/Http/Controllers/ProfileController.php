@@ -59,6 +59,13 @@ class ProfileController extends Controller
     public function updatePassword(){
         if (\Request::has(Profile::$updatePasswordFillable) ) {
 
+            if(!Profile::update_password_validate())
+            {
+                echo ajax_alert('',Profile::$errors);
+                exit;
+                
+            }
+
             extract(\Request::only(Profile::$updatePasswordFillable));
             if($new_password !== $confirm_password)
             {

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Items extends Model
 {
+    public static $errors = [];
     public static $addItemFillable  = [ 'anniv_id', 'link','description', 'type','public_id'];
     public static $deactivateItemFillable =   [  'activator_name' ,  'activator_email' ,'activator_phone',
                                                 'country_code','alert_type', 'id','anniv_id','public_id'];
@@ -78,6 +79,68 @@ class Items extends Model
 	{
         return \DB::table('eb_items')->where('activator_ip', \Request::ip())->where('anniv_id',$annivID)->exists();
 
-	}
+    }
+    
+    
+
+    public function deactivate_item_validate()
+    {
+
+
+        $validate_rules = [
+            'activator_name' =>'required|min:5|max:20',
+            'activator_email' =>'required|email',
+            'activator_phone' =>'nullable|digits_between:5,12',
+            'country_code' =>'required|digits_between:1,4',
+    		'alert_type' => 'required|integer|exists:eb_anniversary_types,id',
+            'anniv_id' =>'required|integer|exists:eb_anniversaries,id',
+            'id' =>'required|integer|exists:eb_items,id'
+
+    	];
+
+	    $validator = \Validator::make(\Request::all(),$validate_rules,$validate_messages);
+
+	    if($validator->fails())
+	    {
+	    	self::$errors = '<br>* '.implode('<br>* ',$validator->errors()->all());
+	    	return false;
+	    }
+	    else
+	    {
+	    	return true;
+        }
+
+        
+    }
+
+    
+    public function add_item_validate()
+    {
+
+        $validate_rules = [
+    		'description' =>'required|min:5',
+    		'anniv_id' => 'required|integer|exists:eb_anniversaries,id',
+    		'type' =>'required|integer|exists:eb_item_types,id'
+
+    	];
+
+		$validate_messages =[];
+
+	    $validator = \Validator::make(\Request::all(),$validate_rules,$validate_messages);
+
+	    if($validator->fails())
+	    {
+	    	self::$errors = '<br>* '.implode('<br>* ',$validator->errors()->all());
+	    	return false;
+	    }
+	    else
+	    {
+	    	return true;
+        }
+
+
+
+    }
+
     
 }

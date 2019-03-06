@@ -29,6 +29,9 @@ Route::get('finalize/verify/email/{verify_code}', 'AuthController@verifyEmail')-
 Route::get('anniversary/{aID}', 'AnniversaryController@info')->where('aID', '[A-Za-z0-9_\-]+');
 Route::post('finalize/deactivate/item', 'ItemController@deactivate');
 
+Route::get('cron/job/dispatch/email', 'CronController@dispatchEmail');
+Route::get('cron/job/dispatch/sms', 'CronController@dispatchSMS');
+
 
 Route::group(['prefix' => 'admin','middleware' =>'web.auth'], function () {
 

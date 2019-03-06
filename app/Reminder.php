@@ -6,9 +6,30 @@ use Illuminate\Database\Eloquent\Model;
 
 class Reminder extends Model
 {
-    public static function setup_notification($anniv_id,$item_id,$data)
+
+	public static function email_queue($limit = 1000)
 	{
-			extact($data);
+			return \DB::table('eb_reminder')->whereRaw('UNIX_TIMESTAMP(reminder_date) <= '.time())
+																			->where('alert_type','email')
+																			->where('sent','no')->limit($limit)->get();
+	}
+
+	public static function sms_queue($limit = 1000)
+	{
+			return \DB::table('eb_reminder')->whereRaw('UNIX_TIMESTAMP(reminder_date) <= '.time())
+																			->where('alert_type','sms')
+																			->where('sent','no')->limit($limit)->get();
+	}
+
+	public static function mark_as_sent($reminder_id)
+	{
+		 return  \DB::table('eb_reminder')->where('id',$reminder_id)->update(['sent' => 'yes']);
+	}
+
+
+    public static function setup_notification_interval($data)
+	{
+			extract($data);
 
 			$annivInfo = \App\Anniversary::info($anniv_id);
 
@@ -22,7 +43,7 @@ class Reminder extends Model
 
 			$anniv_name = $annivInfo->title;
 
-			$permalink = url("anniversary/$public_id");
+			$permalink = url("anniversary/{$annivInfo->public_id}");
 
 
 			foreach($reminder_dates as $main_date):
@@ -43,7 +64,7 @@ class Reminder extends Model
 					$fullname = e($activator_name);
 					$creator_name = e($creator_name);
 
-					$subject = "Reminder: $anniv_name - EBUN TEAM";
+					$subject = "Reminder: $anniv_name - " .env('APP_NAME')."TEAM";
 					$message =
 					"
 						 <h3>Hi $fullname ,  </h3>
@@ -60,7 +81,6 @@ class Reminder extends Model
 
 						  <p>	Thank you </p>
 
-						  <p>	<i> Warm regards from the EBUN team </i></p>
 
 						";
 					}
@@ -79,9 +99,8 @@ class Reminder extends Model
 				        'alert_type' => $alert_type
 			        ] ;
 							
-						\DB::table('eb_reminder')->insert($insertParams);
+					return \DB::table('eb_reminder')->insert($insertParams);
 
-			        //print_r($data);
 
 			endforeach;
 
@@ -110,7 +129,7 @@ class Reminder extends Model
 			}
 			if($difference < (86400 * 3))
 			{
-			$remind_count = 1;
+				$remind_count = 1;
 			}
 
 			$interval = ceil($difference / $remind_count);
@@ -123,7 +142,6 @@ class Reminder extends Model
 			$first_date+=$interval;
 			$remind_intervals[] = date("d F Y",$first_date);
 
-
 			endfor;
 
 			return $remind_intervals;
@@ -131,9 +149,9 @@ class Reminder extends Model
 
 
 	// send_reset_link
-public function send_confirmation_message($anniv_id,$item_id,$data)
+public static function setup_confirmation_message($data)
 	{
-		extact($data);
+		extract($data);
 
 		$annivInfo = \App\Anniversary::info($anniv_id);
 
@@ -141,13 +159,12 @@ public function send_confirmation_message($anniv_id,$item_id,$data)
 
 		$creator_name = \App\Profile::user_info($annivInfo->creator_id)->fullname;
 
-		$reminder_dates = self::create_reminder_dates(date('d F Y'), $anniv_date, 5);
 
 		$item_description = \App\Items::info($anniv_id,$id)->description;
 
 		$anniv_name = $annivInfo->title;
 
-		$permalink = url("anniversary/$public_id");
+		$permalink = url("anniversary/{$annivInfo->public_id}");
 
 
 
@@ -160,7 +177,6 @@ public function send_confirmation_message($anniv_id,$item_id,$data)
 						Thank you
 					";
 
-					return \App\Auth::send_sms($activator_phone,$country_code,$message,'EBUN');
 				}
 				else
 				{
@@ -187,12 +203,25 @@ public function send_confirmation_message($anniv_id,$item_id,$data)
 
 						 <p>	Thank you </p>
 
-						 <p>	<i> Warm regards from the EBUN team </i></p>
+						 
 
 						";
+						$insertParams =
+													[
+														'item_id' => $id,
+														'anniv_id'=> $annivInfo->id ,
+														'subject' => $subject,
+														'message' => $message ,
+														'reminder_date' => now(),
+														'activator_email' => $activator_email,
+														'activator_phone' => $activator_phone,
+														'country_code' => $country_code,
+														'alert_type' => $alert_type
+													] ;
+						
+					return \DB::table('eb_reminder')->insert($insertParams);
+					
 
-
-						return $auth->send_email($email,$subject,$message,'reminder@ebungift.com','EBUN');
 					}
 
 				

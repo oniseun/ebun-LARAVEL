@@ -65,7 +65,14 @@ class AuthController extends Controller
 
     
     public function resetPasswordForm($reset_code){
-    
+
+        if(!Auth::reset_password_validate())
+            {
+                echo ajax_alert('warning',Auth::$errors);
+                exit;
+                
+            }
+
         if(!Auth::reset_code_expired($reset_code))
         {
             return view('auth.resetPasswordForm',['reset_code' => $reset_code]);
@@ -83,11 +90,18 @@ class AuthController extends Controller
     }
 
     public function login(){
-    
+        
         if (!\Request::has(Auth::$loginFormFillable)) {
             return back()->with('failure', "Error in your form fields, please check, make corrections and submit again");
             exit;
         }
+
+        if(!\Profile::login_user_validate())
+            {
+                echo ajax_alert('warning',Auth::$errors);
+                exit;
+                
+            }
 
         if(Auth::login_user())
         {
@@ -108,6 +122,13 @@ class AuthController extends Controller
         if (!\Request::has(Auth::$registerFormFillable)) {
             return back()->with('failure', "Error in your form fields, please check, make corrections and submit again");
             exit;
+        }
+
+        if(!Auth::register_user_validate())
+        {
+            return back()->with('failure',Auth::$errors);
+            exit;
+            
         }
 
         if(Auth::register_user())

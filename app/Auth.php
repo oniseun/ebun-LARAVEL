@@ -7,9 +7,10 @@ use App\Mail\Fastmail;
 
 class Auth extends Model
 {
+    public static $errors = [];
     public static $loginFormFillable = ['email','password'];
-    public static $registerFormFillable = ['email', 'fullname','confirm_password','password'];
-    public static $resetPasswordFillable = ['email','reset_code','new_password','confirm_password'];
+    public static $registerFormFillable = ['email', 'fullname','password_confirmation','password'];
+    public static $resetPasswordFillable = ['email','reset_code','new_password','password_confirmation'];
     public static $resetLinkFillable = ['email'];
     // login_id
     
@@ -131,12 +132,12 @@ public static function register_user()
     $data = \Request::only(self::$registerFormFillable);
 
         
-      $data['password'] = bcrypt($data['confirm_password']);
+      $data['password'] = bcrypt($data['password_confirmation']);
       $data['access_token'] = md5(uniqid().microtime().strrev(uniqid()));
       $data['verify_code'] = md5($data['fullname'].$data['email'].time().uniqid().microtime());
       $data['verify_code_expiry'] = date("Y-m-d H:i:s",(time() + (86400 * 30)));
 
-      unset($data['confirm_password']);
+      unset($data['password_confirmation']);
 
       return \DB::table('eb_profiles')->insert($data);
 
@@ -179,7 +180,7 @@ public static function reset_password()
             ->where('email',$data['email'])
             ->where('reset_code',$data['reset_code'])
             ->where('reset_code_expiry','>',now())
-            ->update(['password' => bcrypt($data['confirm_password'])]);
+            ->update(['password' => bcrypt($data['password_confirmation'])]);
     
 
 
@@ -191,7 +192,7 @@ public static function send_reset_mail($email)
 {
 	
    		$userInfo = self::getInfoByEmail($email);
-   		$subject = 'Reset your password - Ebun';
+   		$subject = 'Reset your password - '.env('APP_NAME');
 
    		self::send_fast_mail($subject,$email,compact('userInfo'),'email.reset-code','email.reset-code');
 }
@@ -200,7 +201,7 @@ public static function send_verification_mail($email)
 {
 		
         $userInfo = self::getInfoByEmail($email);
-   		$subject = 'Verify your Email';
+   		$subject = 'Verify your Email - '.env('APP_NAME');
 
    		self::send_fast_mail($subject,$email,compact('userInfo'),'email.verify','email.verify');
 }
@@ -271,6 +272,101 @@ public static function expire_reset_code($email)
             ->update(['reset_code_expiry' => now()]);
 
 }
+
+public function send_sms($phone,$country_code,$message,$sender)
+{
+
+    $http_query = array(
+                        'username'=> env('SMS_API_USERNAME'),
+                        'password'=> env('SMS_API_PASSWORD'),
+                        'sender'=> $sender,
+                        'recipient'=> '+'.$country_code.$phone,
+                        'message'=> $message
+                        );
+
+   $my_sms_api = 'http://api.smartsmssolutions.com/smsapi.php?'.http_build_query($http_query);
+
+   return file_get_contents($my_sms_api) !== 2914 ? true : false ;
+}
+
+
+public function login_user_validate()
+    {
+        $validate_rules = [
+    		'email' =>'required|email',
+    		'password' =>'required|min:5'
+
+    	];
+
+		$validate_messages =[];
+
+	    $validator = \Validator::make(\Request::all(),$validate_rules,$validate_messages);
+
+	    if($validator->fails())
+	    {
+	    	self::$errors = $validator->errors()->all();
+	    	return false;
+	    }
+	    else
+	    {
+	    	return true;
+	    }
+        
+    }
+
+
+    public function register_user_validate()
+    {
+        $validate_rules = [
+    		'fullname' =>'required|min:5|max:30',
+    		'email' =>'required|email|unique:eb_profiles,email',
+    		'password' => 'required|confirmed|min:5|max:30'
+
+    	];
+
+		$validate_messages =[];
+
+	    $validator = \Validator::make(\Request::all(),$validate_rules,$validate_messages);
+
+	    if($validator->fails())
+	    {
+	    	self::$errors = $validator->errors()->all();
+	    	return false;
+	    }
+	    else
+	    {
+	    	return true;
+	    }
+        
+    }
+    
+    
+    public function reset_password_validate()
+    {
+        
+        $validate_rules = [
+            'email' => 'required|email|exists:eb_profiles,email',
+            'reset_code' => 'required|min:5|exists:eb_profiles,reset_code',
+    		'new_password' => 'required|min:5|confirmed',
+    	];
+
+		$validate_messages =[];
+
+
+		$validator = \Validator::make(\Request::all(),$validate_rules,$validate_messages);
+
+	    if($validator->fails())
+	    {
+	    	self::$errors = '<br>* '.implode('<br>* ',$validator->errors()->all());
+	    	return false;
+	    }
+	    else
+	    {
+	    	return true;
+        }
+        
+        
+    }
 
 
 }

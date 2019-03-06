@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Anniversary extends Model
 {
+        public static $errors = [];
         public static $anniv_id,$annivID,$public_id;
     public static  $addAnniversaryFillable = [ 'title',  'description' ,'type','anniv_items','anniversary_date'];
     public static $updateAnniversaryFillable =  ['title' ,'description' ,'type' ,'anniv_id'];
@@ -172,7 +173,73 @@ class Anniversary extends Model
 
                 return \DB::table('eb_anniversaries')->where('creator_id',$userID)->where('id',$annivID)->exists();
 		
+        }
+        
+        
+	public function add_anniversary_validate()
+	{
+
+        $validate_rules = [
+            'title' =>'required|min:5',
+            'description' =>'required|min:10',
+    		'type' => 'required|integer|exists:eb_anniversary_types,id',
+    		'anniversary_date' =>'required|date'
+
+    	];
+
+		$validate_messages =[
+								'title.min' => 'Title is too short',
+								'description.min' => 'Description is too short',
+
+							];
+
+	    $validator = \Validator::make(\Request::all(),$validate_rules,$validate_messages);
+
+	    if($validator->fails())
+	    {
+	    	self::$errors = '<br>* '.implode('<br>* ',$validator->errors()->all());
+	    	return false;
+	    }
+	    else
+	    {
+	    	return true;
+        }
+        
+
 	}
+
+    public function update_anniversary_validate()
+    {
+
+        $validate_rules = [
+            'title' =>'required|min:5',
+            'description' =>'required|min:10',
+    		'type' => 'required|integer|exists:eb_anniversary_types,id',
+    		'anniv_id' =>'required|integer|exists:eb_anniversaries,id'
+
+    	];
+
+		$validate_messages =[
+								'title.min' => 'Title is too short',
+								'description.min' => 'Description is too short',
+
+							];
+
+	    $validator = \Validator::make(\Request::all(),$validate_rules,$validate_messages);
+
+	    if($validator->fails())
+	    {
+	    	self::$errors = '<br>* '.implode('<br>* ',$validator->errors()->all());
+	    	return false;
+	    }
+	    else
+	    {
+	    	return true;
+        }
+        
+
+    }
+
 
 
 	

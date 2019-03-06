@@ -5,12 +5,20 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Items;
 use App\Auth;
+use App\Reminder;
 
 class ItemController extends Controller
 {
     public function add()
     {
         if (\Request::has(Items::$addItemFillable) ) {
+
+            if(!Items::add_item_validate())
+            {
+                echo ajax_alert('warning',items::$errors);
+                exit;
+                
+            }
 
             extract(\Request::only(Items::$addItemFillable));
 
@@ -36,12 +44,20 @@ class ItemController extends Controller
     {
         if (\Request::has(Items::$deactivateItemFillable) ) {
 
-            extract(\Request::only(Items::$deactivateItemFillable));
+            if(!Items::deactivate_item_validate())
+            {
+                echo ajax_alert('warning',items::$errors);
+                exit;
+                
+            }
+
+            $data = \Request::only(Items::$deactivateItemFillable);
+            extract($data);
 
             if(Items::has_deactivated($anniv_id) || !Items::deactivate())
             {
-
-                echo ajax_alert('warning',' -- An error occured -- ');
+                $this->dispatchNotification($data);
+                echo ajax_alert('warning',' -- You have already dectivated an item on list -- ');
             }
             else
              {  
@@ -56,8 +72,11 @@ class ItemController extends Controller
         }
     }
 
-    public function activate()
+    private function dispatchNotification($data)
     {
-
+                Reminder::setup_confirmation_message($data);
+                Reminder::setup_notification_interval($data);
     }
+
+   
 }

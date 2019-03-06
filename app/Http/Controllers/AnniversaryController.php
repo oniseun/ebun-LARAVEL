@@ -72,6 +72,12 @@ class AnniversaryController extends Controller
     {
         if (\Request::has(Anniversary::$updateAnniversaryFillable) ) {
 
+            if(!Anniversary::update_anniversary_validate())
+            {
+                echo ajax_alert('warning',Anniversary::$errors);
+                exit;
+                
+            }
             extract(\Request::only(Anniversary::$updateAnniversaryFillable));
 
             if(!Anniversary::modify(Auth::id()))
@@ -92,6 +98,13 @@ class AnniversaryController extends Controller
     public function add()
     {
         if (\Request::has(Anniversary::$addAnniversaryFillable) ) {
+
+            if(!Anniversary::add_anniversary_validate())
+            {
+                echo ajax_alert('warning',Anniversary::$errors);
+                exit;
+                
+            }
 
             extract(\Request::only(Anniversary::$addAnniversaryFillable));
 
