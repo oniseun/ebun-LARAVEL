@@ -210,7 +210,7 @@
                 <table cellpadding="0" cellspacing="0" class="force-full-width">
                   <tr>
                    <td height="60" valign="middle" class="header-cell">
-                    <center>  <img  style="height:35px; width:180px" src="{{ url('/assets-public/images/connect-lagos.png') }}" alt="logo"> </center>
+                    <center>  <img  style="height:35px; width:180px" src="{{ url('/img/logo.png') }}" alt="logo"> </center>
                     </td>
                   </tr>
                   <tr>
@@ -255,7 +255,7 @@
                         <tr>
                           <td style="padding-top:20px;background-color:#ffffff;">
                             Best Regards,<br>
-                            <strong>Connect Lagos</strong> Team <br>
+                            <strong>{{ env('APP_NAME') }}</strong> Team <br>
                             {{-- <p>Download the app on 
                               <a href="#" style="color:seagreen">Android</a> or <a href="#" style="color:seagreen">Iphone</a>  
                             </p> --}}
@@ -269,7 +269,7 @@
                       <br>
                       <center> <a href="{{ url('/') }}" style="color:seagreen"><strong>{{ url('/') }}</strong></a> 
                         <p>
-                      <strong>&copy; Copyright {{ date("Y") }} ConnectLagos</strong>
+                      <strong>&copy; Copyright {{ date("Y") }} {{ env('APP_NAME') }}</strong>
                         </p>
                       </center>
                     </td>

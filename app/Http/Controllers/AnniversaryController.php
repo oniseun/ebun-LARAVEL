@@ -47,18 +47,69 @@ class AnniversaryController extends Controller
 
     public function remove()
     {
+        if (\Request::has(Anniversary::$removeAnniversaryFillable) ) {
 
+            extract(\Request::only(Anniversary::$removeAnniversaryFillable));
+
+            if(!Anniversary::remove(Auth::id()))
+            {
+
+                echo ajax_alert('warning',' -- you cant delete what you didnt create -- ');
+            }
+            else
+             {  
+                    echo ajax_alert('success',' Anniversary Deleted Successfully');
+                    echo js_redirect('/admin/dashboard');
+            }
+        }
+        else {
+            echo ajax_alert('warning',' -- Error Deleting anniversary  -- ');
+        }
     }
 
 
     public function update()
     {
+        if (\Request::has(Anniversary::$updateAnniversaryFillable) ) {
 
+            extract(\Request::only(Anniversary::$updateAnniversaryFillable));
+
+            if(!Anniversary::modify(Auth::id()))
+            {
+
+                echo ajax_alert('warning',' -- you cant update what you didnt create -- ');
+            }
+            else
+             {  
+                    echo ajax_alert('success',' Anniversary Updated Successfully');
+            }
+        }
+        else {
+            echo ajax_alert('warning',' -- Error updating anniversary  -- ');
+        }
     }
 
     public function add()
     {
+        if (\Request::has(Anniversary::$addAnniversaryFillable) ) {
 
+            extract(\Request::only(Anniversary::$addAnniversaryFillable));
+
+            if(!Anniversary::add(Auth::id()))
+            {
+
+                echo ajax_alert('warning',' -- An error occured -- ');
+            }
+            else
+             {  
+                    echo ajax_alert('success',' Anniversary Added Successfully.. redirecting..');
+                    $url = Anniversary::$public_id;
+                    echo js_redirect("/anniversary/$url");
+            }
+        }
+        else {
+            echo ajax_alert('warning',' -- Error adding anniversary, please make sure you add gif items before submit  -- ');
+        }
     }
 
 }

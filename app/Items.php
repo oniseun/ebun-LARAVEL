@@ -6,7 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Items extends Model
 {
-    public static $addItemFillable  = [ 'anniv_id', 'link','description', 'type'];
+    public static $addItemFillable  = [ 'anniv_id', 'link','description', 'type','public_id'];
+    public static $deactivateItemFillable =   [  'activator_name' ,  'activator_email' ,'activator_phone',
+                                                'country_code','alert_type', 'id','anniv_id','public_id'];
+
     
 	public static function info($anniv_id,$item_id)
 	{
@@ -35,11 +38,11 @@ class Items extends Model
         return \DB::table('eb_items')->where('anniv_id',$anniv_id)->limit($limit)->get();
     }
     
-    public static function add_new($userID)
+    public static function add($userID)
 	{
 		
         $data = \Request::only(self::$addItemFillable) ;
-
+        unset($data['public_id']);
         $data['creator_id'] = $userID ;
 		return  \DB::table('eb_items' )->insert($data);
 
@@ -52,7 +55,7 @@ class Items extends Model
 
     }
 
-    public static function deactivate($data)
+    public static function deactivate()
 	{
             $data = \Request::only(self::$deactivateItemFillable);
           
@@ -62,8 +65,9 @@ class Items extends Model
             $data['activator_ip'] = \Request::ip();
             $data['activator_ua_hash'] = md5(\Request::header('User-Agent') );
             
-            $itemID = $data['id']; unset($data['id']);
-            $annivID = $data['anniv_id']; unset($data['anniv_id']);
+            $itemID = $data['id']; 
+            $annivID = $data['anniv_id']; 
+            unset($data['id'],$data['anniv_id'],$data['public_id']);
 
             return \DB::table('eb_items')->where('id',$itemID)->where('anniv_id',$annivID)->update($data);
 

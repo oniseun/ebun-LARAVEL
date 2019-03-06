@@ -1,6 +1,6 @@
 @extends('master.adminPage')
 @section('title')
-Update Anniversary - {{ $aInfo->title }}
+Delete Anniversary - {{ $aInfo->title }}
 @endsection
 @section('body')
 
@@ -13,7 +13,7 @@ Update Anniversary - {{ $aInfo->title }}
           </div>
 
           <div class="panel-body">
-             <form  method="post" action="/admin/finalize/delete/anniversary" enctype="multipart/form-data">
+             <form  method="post" action="/admin/finalize/remove/anniversary" enctype="multipart/form-data">
                 @csrf
                 <input  type="hidden" name="anniv_id" value="{{ $aInfo->id }}"  />
              <input  type="hidden" name="public_id" value="{{ $aInfo->public_id }}"  />
@@ -36,7 +36,7 @@ Update Anniversary - {{ $aInfo->title }}
                
                 <div class="col-lg-12">
                 <label>Anniversary type</label>
-                    <select disabled="disabled" name="anniv_type" class="form-control ">
+                    <select disabled="disabled" name="type" class="form-control ">
                     <option value=""></option>
                     <?php
                     $anniv_types = App\Anniversary::types();

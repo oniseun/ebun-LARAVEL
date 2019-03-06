@@ -33,7 +33,7 @@ Update Anniversary - {{ $aInfo->title }}
                
                 <div class="col-lg-12">
                 <label>Anniversary type</label>
-                    <select name="anniv_type" class="form-control ">
+                    <select name="type" class="form-control ">
                     <option value=""></option>
                     <?php
                     $anniv_types = App\Anniversary::types();

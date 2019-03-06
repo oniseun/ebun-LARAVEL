@@ -82,4 +82,18 @@ function timeago_upfront( $ptime )
             return 'less than ' . $r . ' ' . $str . ( $r > 1 ? 's' : '' ) . ' time';
         }
     }
+
+
+   
+}
+
+function js_redirect($url,$sec='5')
+{
+    
+    $time = ($sec * 1000);
+    $script ='<script>window.setTimeout(
+    function()
+        { window.location ="'.$url.'"; },'.$time.');
+        </script>';
+    return $script;
 }

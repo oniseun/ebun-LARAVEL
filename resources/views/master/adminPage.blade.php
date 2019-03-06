@@ -163,7 +163,7 @@ $(function(){
                             item_key +'.)</b> GIFT TYPE'+
                             '</span>'+
 
-                            '<select name="item_type[' + item_key + ']" class="form-control "  aria-describedby="basic-addon4">' +
+                            '<select name="anniv_items[' + item_key + '][item_type]" class="form-control "  aria-describedby="basic-addon4">' +
                             '<option value=""> </option>'+
                             '{!! $item_options !!}'+
                             '</select>'+
@@ -179,15 +179,16 @@ $(function(){
                             '<span class="input-group-addon" id="basic-addon3">'+
                             '<i class="fa fa-globe" aria-hidden="true"></i> weblink'+
                             '</span>'+
-                            '<input type="text" class="form-control" placeholder="Web Link to gift  (optional) "'+
-                            'name="item_link[' + item_key + ']" aria-describedby="basic-addon3">'+
+                            '<input type="text" class="form-control"  name="anniv_items[' + item_key + '][item_link]" '+ 
+                            ' placeholder="Web Link to gift  (optional) "  aria-describedby="basic-addon3">'+
                           '</div>'+
 
                        '</div> ' +
 
                         '<div class="col-md-12">' +
 
-                          '<br><input type="text" name="item_description[' + item_key + ']" class="form-control item-input"  placeholder="Describe your gift" /><br>'+
+                          '<br><input type="text" name="anniv_items[' + item_key + '][item_description]" '+
+                          ' class="form-control item-input"  placeholder="Describe your gift" /><br>'+
 
 
                        '</div> ' +
@@ -196,6 +197,7 @@ $(function(){
 
                     $('.item-list').append($(string));
 
+                    
                     
                     if (item_key == 50)
                     {

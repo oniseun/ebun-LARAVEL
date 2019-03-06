@@ -1,7 +1,9 @@
 
 
 @extends('master.adminPage')
-@section('title','My dashboard')
+@section('title')
+{{ \App\Auth::currentUser()->fullname }} - Dashboard
+@endsection
 @section('body')
 
 <!-- page header -->

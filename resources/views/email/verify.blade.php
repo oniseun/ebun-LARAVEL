@@ -1,6 +1,9 @@
 @extends('master.email')
 
-@section('title','Thank you for signing up on ConnectLagos')
+@section('title')
+
+Thank you for signing up on {{ env('APP_NAME') }}
+@endsection
 @section('content')
 Hi <strong>{{ $userInfo->fullname }}</strong>, thank you for signing up!<br>
 <p>

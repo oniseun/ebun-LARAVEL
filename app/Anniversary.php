@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Anniversary extends Model
 {
-    public static  $addAnniversaryFillable = [ 'title',  'description' ,'type','anniv_items'];
+        public static $anniv_id,$annivID,$public_id;
+    public static  $addAnniversaryFillable = [ 'title',  'description' ,'type','anniv_items','anniversary_date'];
     public static $updateAnniversaryFillable =  ['title' ,'description' ,'type' ,'anniv_id'];
     public static $removeAnniversaryFillable =  ['public_id'];
-    public static $deactivateItemFillable =   [  'activator_name' ,  'activator_email' ,'activator_phone', 'id','anniv_id'];
-
+   
 	public static function info($anniv_id)
 	{
         return  \DB::table('eb_anniversaries')->where('public_id',$anniv_id)->orWhere('id',$anniv_id)->first();
@@ -66,15 +66,21 @@ class Anniversary extends Model
 
         
 
-        $data['public_id'] = uniqid(time());
+        $data['public_id'] = md5($userID.uniqid(time()));
         $data['anniversary_date'] = mysql_timestamp($data['anniversary_date']);
         $data['creator_id'] = $userID;
 
-		$annivID = \DB::table('eb_anniversaries' )->insertGetId($data);
+        $annivItems = $data['anniv_items'];
+        unset($data['anniv_items']);
+
+        $annivID = \DB::table('eb_anniversaries' )->insertGetId($data);
+
+        self::$annivID = $annivID;
+        self::$public_id =$data['public_id'];         
 
         if($annivID !== false)
         {
-            foreach($data['anniv_items'] as $itemInfo):
+            foreach($annivItems as $itemInfo):
                                   
                     self::add_items($userID,$annivID, $itemInfo['item_type'],$itemInfo['item_description'],$itemInfo['item_link']);
                 
@@ -137,7 +143,7 @@ class Anniversary extends Model
         $data = \Request::only(self::$removeAnniversaryFillable);
         
 
-        $anniv_id = self::info($data['public_id']);
+        $anniv_id = self::info($data['public_id'])->id;
         $delete = \DB::table('eb_anniversaries')->where('public_id',$data['public_id'])->where('creator_id',$userID)->delete();
         
 
@@ -157,7 +163,14 @@ class Anniversary extends Model
 	public static function expired($annivID)
 	{
 
-        return \DB::table('eb_anniversaries')->whereRaw('UNIX_TIMESTAMP(anniversary_date) < '.time())->where('id',$annivID)->exists();
+                return \DB::table('eb_anniversaries')->whereRaw('UNIX_TIMESTAMP(anniversary_date) < '.time())->where('id',$annivID)->exists();
+		
+        }
+        
+        public static function is_creator($userID,$annivID)
+	{
+
+                return \DB::table('eb_anniversaries')->where('creator_id',$userID)->where('id',$annivID)->exists();
 		
 	}
 

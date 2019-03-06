@@ -13,7 +13,7 @@ $item_types = App\Items::types();
       </div>
       <div class="modal-body">
         <div class="row">
-  <form  method="post" action="/admin/finalize/add/anniversary" enctype="multipart/form-data">
+  <form  method="post" action="/admin/finalize/add/anniversary">
     @csrf
       <div class="col-lg-12">
           <h3>
@@ -31,15 +31,15 @@ $item_types = App\Items::types();
           <textarea name="description" style="min-height:150px" class="form-control " placeholder="Tell us more about the anniversary.."></textarea>
       <br></div>
       <div class="col-lg-4">
-      <label >Is comin up on</label>
-          <input id="datepicker" type="date" class="form-control " name="anniv_date" 
+      <label >Is coming up on</label>
+          <input id="datepicker" type="date" class="form-control " name="anniversary_date" 
           placeholder="Select Annivesary date" editable="false"/>
       </div>
           
       
       <div class="col-lg-8">
       <label>Anniversary type</label>
-          <select name="anniv_type" class="form-control ">
+          <select name="type" class="form-control ">
           <option value=""></option>
          
               @foreach ($anniv_types as $type)
@@ -72,7 +72,7 @@ $item_types = App\Items::types();
       <div class="col-lg-12">
       <br>
       <hr>
-<button class="btn btn-danger"> <i class="fa fa-send" aria-hidden="true"></i> Save anniversary</button>                               
+<button class="btn btn-danger ajax-submit"> <i class="fa fa-send" aria-hidden="true"></i> Save anniversary</button>                               
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
         <br>
         <p class="ajax-message"></p>

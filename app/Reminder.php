@@ -6,23 +6,23 @@ use Illuminate\Database\Eloquent\Model;
 
 class Reminder extends Model
 {
-    private function setup_notification($anniv_id,$item_id,$data)
+    public static function setup_notification($anniv_id,$item_id,$data)
 	{
-			extract($this->clean_post($data));
+			extact($data);
 
-			$anniv_info = $this->anniversary_info($anniv_id);
+			$annivInfo = \App\Anniversary::info($anniv_id);
 
-			$anniv_date = date('d F Y',strtotime($anniv_info['anniversary_date']));
+			$anniv_date = date('d F Y',strtotime($annivInfo->anniversary_date));
 
-			$creator_name = $this->get_user_info($anniv_info['creator_id'])['fullname'];
+			$creator_name = \App\Profile::user_info($annivInfo->creator_id)->fullname;
 
-			$reminder_dates = $this->create_reminder_dates(date('d F Y'), $anniv_date, 5);
+			$reminder_dates = self::create_reminder_dates(date('d F Y'), $anniv_date, 5);
 
-			$item_description = $this->item_info($anniv_info['id'],$item_id)['description'];
+			$item_description = \App\Items::info($anniv_id,$id)->description;
 
-			$anniv_name = $anniv_info['title'];
+			$anniv_name = $annivInfo->title;
 
-			$public_url = main_url("anniversary.php?anniv_id=$public_id");
+			$permalink = url("anniversary/$public_id");
 
 
 			foreach($reminder_dates as $main_date):
@@ -33,22 +33,20 @@ class Reminder extends Model
 					
 					$subject = $message = 
 					"
-						Hi $fullname , dont forget the \"$item_description\" you pledged to purchase for $creator_name on his $anniv_name. 
+						Hi $activator_name , dont forget the \"$item_description\" you pledged to purchase for $creator_name on his $anniv_name. 
 						Thank you
 					";
 				}
 				else
 				{
-					$anniv_name = htmlentities($anniv_name);
-					$fullname = htmlentities($fullname);
-					$creator_name = htmlentities($creator_name);
+					$anniv_name = e($anniv_name);
+					$fullname = e($activator_name);
+					$creator_name = e($creator_name);
 
 					$subject = "Reminder: $anniv_name - EBUN TEAM";
 					$message =
 					"
-						<html><head></head><body>
-
-						  <h3>Hi $fullname ,  </h3>
+						 <h3>Hi $fullname ,  </h3>
 
 
 						  <p>
@@ -58,31 +56,30 @@ class Reminder extends Model
 
 						  <p>	<i>The anniversary will take place on <b>$anniv_date</b> </i></p>
 
-						  <p>	<a href=\"$public_url\"> Click here for more details </a></p>
+						  <p>	<a href=\"$permalink\"> Click here for more details </a></p>
 
 						  <p>	Thank you </p>
 
 						  <p>	<i> Warm regards from the EBUN team </i></p>
 
-						  </body></html>
 						";
 					}
 
-					$insert = $this->insert(
+					$insertParams =
 
 			      	[
-				        'item_id' => $item_id,
-				        'anniv_id'=>$anniv_info['id'],
-				        'subject' => $this->escape_string($subject),
-				        'message' =>$this->escape_string($message),
-				        'reminder_date' => $this->now($main_date),
-				        'activator_email' => $email,
-				        'activator_phone' => $phone,
+				        'item_id' => $id,
+				        'anniv_id'=>$annivInfo->id ,
+				        'subject' => $subject,
+				        'message' => $message ,
+				        'reminder_date' => mysql_timestamp($main_date),
+				        'activator_email' => $activator_email,
+				        'activator_phone' => $activator_phone,
 				        'country_code' => $country_code,
 				        'alert_type' => $alert_type
-			        ],
-
-			        'eb_reminder' );
+			        ] ;
+							
+						\DB::table('eb_reminder')->insert($insertParams);
 
 			        //print_r($data);
 
@@ -90,16 +87,15 @@ class Reminder extends Model
 
 	}
 
-	public function clear_notifications($anniv_id,$item_id)
+	public static function clear_notifications($anniv_id,$item_id)
 	{
-		return $this->query("DELETE FROM eb_reminder WHERE id=$item_id AND anniv_id = $anniv_id");
+		return \DB::table('eb_reminder')->where('anniv_id',$anniv_id)->where('id',$item_id)->where('anniv_id',$anniv_id)->delete();
+
 	}
 
-	private function create_reminder_dates($from_date, $to_date, $remind_count)
+	private static function create_reminder_dates($from_date, $to_date, $remind_count)
 	{
 			 
-			// $from_date = '21 august 2017';
-			// $to_date = '26 august 2017';
 
 			$ts_1st = strtotime($from_date);
 			$ts_2nd = strtotime($to_date);
@@ -137,22 +133,21 @@ class Reminder extends Model
 	// send_reset_link
 public function send_confirmation_message($anniv_id,$item_id,$data)
 	{
-			$auth = new Auth;
+		extact($data);
 
-			extract($this->clean_post($data));
+		$annivInfo = \App\Anniversary::info($anniv_id);
 
-			$anniv_info = $this->anniversary_info($anniv_id);
+		$anniv_date = date('d F Y',strtotime($annivInfo->anniversary_date));
 
-			$anniv_date = date('d F Y',strtotime($anniv_info['anniversary_date']));
+		$creator_name = \App\Profile::user_info($annivInfo->creator_id)->fullname;
 
-			$creator_name = $this->get_user_info($anniv_info['creator_id'])['fullname'];
+		$reminder_dates = self::create_reminder_dates(date('d F Y'), $anniv_date, 5);
 
+		$item_description = \App\Items::info($anniv_id,$id)->description;
 
-			$item_description = $this->item_info($anniv_info['id'],$item_id)['description'];
+		$anniv_name = $annivInfo->title;
 
-			$anniv_name = $anniv_info['title'];
-
-			$public_url = main_url("anniversary.php?anniv_id=$public_id");
+		$permalink = url("anniversary/$public_id");
 
 
 
@@ -161,41 +156,41 @@ public function send_confirmation_message($anniv_id,$item_id,$data)
 					
 					$subject = $message = 
 					"
-						Hi $fullname , your pledge to purchase  \"$item_description\" for $creator_name on his $anniv_name has been registered on EBUN. 
+						Hi $activator_name , dont forget the \"$item_description\" you pledged to purchase for $creator_name on his $anniv_name. 
 						Thank you
 					";
 
-					return $auth->send_sms($phone,$country_code,$message,'EBUN');
+					return \App\Auth::send_sms($activator_phone,$country_code,$message,'EBUN');
 				}
 				else
 				{
-					$anniv_name = htmlentities($anniv_name);
-					$fullname = htmlentities($fullname);
-					$creator_name = htmlentities($creator_name);
 
-					$subject = "Gift purchase confirmation: $anniv_name - EBUN TEAM";
+					$anniv_name = e($anniv_name);
+					$fullname = e($activator_name);
+					$creator_name = e($creator_name);
+
+					$subject =  "Gift purchase confirmation: $anniv_name - ".env('APP_NAME')." TEAM";
 					$message =
 					"
-						<html><head></head><body>
+						 
+						 <h3>Hi $fullname ,  </h3>
 
-						  <h3>Hi $fullname ,  </h3>
 
+						 <p>
+								 Your pledge to purchase the &quot;<b> $item_description 
+								 </b>&quot;  for $creator_name on their upcoming anniversary <b> <i>$anniv_name</i></b> has been registered by EBUN.
+						 </p>
 
-						  <p>
-						  		Your pledge to purchase the &quot;<b> $item_description 
-						  		</b>&quot;  for $creator_name on their upcoming anniversary <b> <i>$anniv_name</i></b> has been registered by EBUN.
-						  </p>
+						 <p>	<i>Please don't forget that the anniversary will take place on <b>$anniv_date</b> </i> and also to redeem your plegde before the anniversary date</p>
 
-						  <p>	<i>Please don't forget that the anniversary will take place on <b>$anniv_date</b> </i> and also to redeem your plegde before the anniversary date</p>
+						 <p>	<a href=\"$permalink\"> Click here for more details </a></p>
 
-						  <p>	<a href=\"$public_url\"> Click here for more details </a></p>
+						 <p>	Thank you </p>
 
-						  <p>	Thank you </p>
+						 <p>	<i> Warm regards from the EBUN team </i></p>
 
-						  <p>	<i> Warm regards from the EBUN team </i></p>
-
-						  </body></html>
 						";
+
 
 						return $auth->send_email($email,$subject,$message,'reminder@ebungift.com','EBUN');
 					}
