@@ -5,8 +5,8 @@
 @section('body')
 
 <!-- page header -->
-<div class="col-md-8 col-md-offset-2">
-    <br><br>
+<div class="col-md-12">
+    
     <div style="border-bottom:0" class="page-header">
     <div class="well">
     <center>
@@ -29,7 +29,7 @@
     
     
 
-<div class="col-md-6 col-md-offset-3">
+<div class="col-md-8">
 
 
   <div class="list-group">
@@ -86,3 +86,5 @@
 
 
 </div>
+
+@endsection
