@@ -210,7 +210,7 @@
                 <table cellpadding="0" cellspacing="0" class="force-full-width">
                   <tr>
                    <td height="60" valign="middle" class="header-cell">
-                    <center>  <img  style="height:35px; width:180px" src="{{ url('/img/logo.png') }}" alt="logo"> </center>
+                    <center>  <img  style="display:inline-block;height:24px; width:24px;" src="{{ url('/img/logo.png') }}" alt="logo"> <strong style="color:black"> {{ strtoupper(env('APP_NAME')) }} </strong>  </center>
                     </td>
                   </tr>
                   <tr>

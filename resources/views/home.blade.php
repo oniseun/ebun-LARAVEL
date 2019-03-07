@@ -61,8 +61,15 @@
                                     name="password" value="" autocomplete="off" placeholder="Password"/>
                                     <br>
 
+                                    
+
                                     <button type="submit" class="btn btn-success btn-lg btn-block">SIGN IN
                                     </button>
+                                    <br>
+                                    <p><center>
+                                            <a href="/reset">Forgot Password ?</a>
+                                    </center>
+                                        </p>
                                     <br>
 
                                     <p class="ajax-message"></p>
