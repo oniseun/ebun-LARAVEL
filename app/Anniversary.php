@@ -16,7 +16,12 @@ class Anniversary extends Model
 	{
         return  \DB::table('eb_anniversaries')->where('public_id',$anniv_id)->orWhere('id',$anniv_id)->first();
 
-	}
+        }
+        
+        public static function _exist($anniv_id)
+	{
+                return  \DB::table('eb_anniversaries')->where('public_id',$anniv_id)->orWhere('id',$anniv_id)->exists();
+        }
 
 	public static function data_exist($userID,$anniv_id)
 	{
@@ -25,22 +30,21 @@ class Anniversary extends Model
         return \DB::table('eb_anniversaries')
                 ->where(function ($query) {
                     $anniv_id = self::$anniv_id;
-                    unset(self::$anniv_id);
                     $query->where('public_id',$anniv_id)->orWhere('id',$anniv_id);
                 })
                 ->where('creator_id',$userID)->exists();
-    }
+        }
 
 	public static function profile_anniv_count($userID)
 	{
-       return  \DB::table('eb_anniversaries')->where('creator_id',$userID)->count();
+                return  \DB::table('eb_anniversaries')->where('creator_id',$userID)->count();
 	}
 
 	
 
 	public static function types()
 	{
-        return \DB::table('eb_anniversary_types')->get();
+                return \DB::table('eb_anniversary_types')->get();
 	}
 
 
@@ -48,7 +52,7 @@ class Anniversary extends Model
 
 	public static function get_icon($anniv_type)
 	{
-        return \DB::table('eb_anniversary_types')->where('id',$anniv_type)->value('icon');
+                return \DB::table('eb_anniversary_types')->where('id',$anniv_type)->value('icon');
 	}
 
 
@@ -56,7 +60,7 @@ class Anniversary extends Model
 
 	public static function _list($userID,$limit = 5)
 	{
-        return  \DB::table('eb_anniversaries')->where('creator_id',$userID)->orderBy('anniversary_date','DESC')->limit($limit)->get();
+                return  \DB::table('eb_anniversaries')->where('creator_id',$userID)->orderBy('anniversary_date','DESC')->limit($limit)->get();
 
 	}
 
@@ -176,16 +180,18 @@ class Anniversary extends Model
         }
         
         
-	public function add_anniversary_validate()
+	public static function add_anniversary_validate()
 	{
 
-        $validate_rules = [
-            'title' =>'required|min:5',
-            'description' =>'required|min:10',
-    		'type' => 'required|integer|exists:eb_anniversary_types,id',
-    		'anniversary_date' =>'required|date'
+                $input = \Request::only(self::$addAnniversaryFillable);
 
-    	];
+                $validate_rules = [
+                'title' =>'required|min:5',
+                'description' =>'required|min:10',
+                        'type' => 'required|integer|exists:eb_anniversary_types,id',
+                        'anniversary_date' =>'required|date'
+
+                ];
 
 		$validate_messages =[
 								'title.min' => 'Title is too short',
@@ -193,7 +199,7 @@ class Anniversary extends Model
 
 							];
 
-	    $validator = \Validator::make(\Request::all(),$validate_rules,$validate_messages);
+	    $validator = \Validator::make($input,$validate_rules,$validate_messages);
 
 	    if($validator->fails())
 	    {
@@ -208,9 +214,11 @@ class Anniversary extends Model
 
 	}
 
-    public function update_anniversary_validate()
+    public static function update_anniversary_validate()
     {
 
+        $input = \Request::only(self::$updateAnniversaryFillable);
+        
         $validate_rules = [
             'title' =>'required|min:5',
             'description' =>'required|min:10',
@@ -225,7 +233,7 @@ class Anniversary extends Model
 
 							];
 
-	    $validator = \Validator::make(\Request::all(),$validate_rules,$validate_messages);
+	    $validator = \Validator::make($input,$validate_rules,$validate_messages);
 
 	    if($validator->fails())
 	    {

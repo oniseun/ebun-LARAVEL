@@ -16,7 +16,7 @@
 
                             <input placeholder="Current Password" 
                             class="form-control"
-                            type="password" name="password" value="" autocomplete="off" /><br>
+                            type="password" name="current_password" value="" autocomplete="off" /><br>
 
                             <input placeholder="New Password" 
                             class="form-control"
@@ -24,7 +24,7 @@
 
                             <input placeholder="Re-enter Password" 
                             class="form-control"
-                            type="password" name="password_confirmation" value="" autocomplete="off" /><br>
+                            type="password" name="new_password_confirmation" value="" autocomplete="off" /><br>
 
 
 

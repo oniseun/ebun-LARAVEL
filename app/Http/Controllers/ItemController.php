@@ -15,7 +15,7 @@ class ItemController extends Controller
 
             if(!Items::add_item_validate())
             {
-                echo ajax_alert('warning',items::$errors);
+                echo ajax_alert('warning',Items::$errors);
                 exit;
                 
             }
@@ -28,7 +28,7 @@ class ItemController extends Controller
                 echo ajax_alert('warning',' -- An error occured -- ');
             }
             else
-             {  
+            {  
                     echo ajax_alert('success',' Item Added Successfully!!.. redirecting..');
                     $url = $public_id;
                     echo js_redirect("/anniversary/$url");
@@ -46,7 +46,7 @@ class ItemController extends Controller
 
             if(!Items::deactivate_item_validate())
             {
-                echo ajax_alert('warning',items::$errors);
+                echo ajax_alert('warning',Items::$errors);
                 exit;
                 
             }

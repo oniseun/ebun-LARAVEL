@@ -66,13 +66,7 @@ class AuthController extends Controller
     
     public function resetPasswordForm($reset_code){
 
-        if(!Auth::reset_password_validate())
-            {
-                echo ajax_alert('warning',Auth::$errors);
-                exit;
-                
-            }
-
+        
         if(!Auth::reset_code_expired($reset_code))
         {
             return view('auth.resetPasswordForm',['reset_code' => $reset_code]);
@@ -96,7 +90,7 @@ class AuthController extends Controller
             exit;
         }
 
-        if(!\Profile::login_user_validate())
+        if(!Auth::login_user_validate())
             {
                 echo ajax_alert('warning',Auth::$errors);
                 exit;
@@ -131,12 +125,14 @@ class AuthController extends Controller
             
         }
 
+        extract(\Request::only(Auth::$registerFormFillable));
         if(Auth::register_user())
         {
-            extract(\Request::only(Auth::$registerFormFillable));
-            $redirect_url = \Request::has('redirect_url') ? \Request::input('redirect_url') : '/admin/dashboard';
+            
+            $redirect_url = isset($redirect_url) ? $redirect_url : '/admin/dashboard';
 
             Auth::send_verification_mail($email);
+            Auth::create_session($email);
 
             return redirect($redirect_url);
         }
@@ -156,7 +152,7 @@ class AuthController extends Controller
     public function reset(){
     
         if (!\Request::has(Auth::$resetLinkFillable)) {
-            return back()->with('failure', "Error in your form fields, please check, make corrections and submit again");
+            echo  ajax_alert('warning',  "Error in your form fields, please check, make corrections and submit again");
             exit;
         }
 
@@ -165,10 +161,10 @@ class AuthController extends Controller
             $email = \Request::only(Auth::$resetLinkFillable)['email'];
             Auth::send_reset_mail($email);
 
-            return back()->with('success', 'Reset link sent.. Check your mail!!');
+            echo  ajax_alert('success', 'Reset link sent.. Check your mail!! <a href="/home">go home</a>');
         }
         else {
-            return back()->with('failure',  "Email does not exist");
+            echo  ajax_alert('warning',  "Email does not exist");
         }
     
     }
@@ -179,6 +175,13 @@ class AuthController extends Controller
         if (!\Request::has(Auth::$resetPasswordFillable)) {
             return back()->with('failure', "Error in your form fields, please check, make corrections and submit again");
             exit;
+        }
+
+        if(!Auth::reset_password_validate())
+        {
+            return back()->with('failure',Auth::$errors);
+            exit;
+            
         }
 
         extract(\Request::only(Auth::$resetPasswordFillable));

@@ -8,7 +8,7 @@ class Profile extends Model
 {
     public static $errors = [];
     public static  $updateInfoFillable = ['fullname','phone','email'];
-    public static  $updatePasswordFillable = ['new_password','confirm_password'];
+    public static  $updatePasswordFillable = ['new_password','new_password_confirmation'];
     public static  $updatePhotoFillable = ['photo'];
     
 public static function update_info($userID)
@@ -28,7 +28,7 @@ public static function change_password($userID)
 {
 
     $data = \Request::only(self::$updatePasswordFillable);
-    $new_password = bcrypt($data['confirm_password']);
+    $new_password = bcrypt($data['new_password_confirmation']);
 
     $access_token = md5(uniqid().microtime().strrev(uniqid()));
 
@@ -65,13 +65,14 @@ public static function user_info($userID)
 }
 
 
-public function update_info_validate()
+public static function update_info_validate($userID)
 {
-    $uid = \App\Auth::id();
+    $input = \Request::only(self::$updateInfoFillable);
+
     $validate_rules = [
         'fullname' =>'required|min:5|max:30',
-        'email' =>'required|email|unique:users,email,'.$uid.',id',
-        'phone' => 'nullable|digits_between:5,12|unique:eb_profiles,phone,'.$uid.',id',
+        'email' =>'required|email|unique:eb_profiles,email,'.$userID.',user_id',
+        'phone' => 'nullable|digits_between:5,12|unique:eb_profiles,phone,'.$userID.',user_id',
     
 
 
@@ -79,7 +80,7 @@ public function update_info_validate()
 
     $validate_messages =[];
 
-    $validator = \Validator::make(\Request::all(),$validate_rules,$validate_messages);
+    $validator = \Validator::make($input,$validate_rules,$validate_messages);
 
     if($validator->fails())
     {
@@ -94,8 +95,9 @@ public function update_info_validate()
     
 }
 
-public function update_password_validate()
+public static function update_password_validate()
 {
+    $input = \Request::only(self::$updatePasswordFillable);
 
     $validate_rules = [
         'current_password' =>'required|min:5',
@@ -105,14 +107,14 @@ public function update_password_validate()
     $validate_messages =[];
 
 
-    $validator = \Validator::make(\Request::all(),$validate_rules,$validate_messages);
+    $validator = \Validator::make($input,$validate_rules,$validate_messages);
 
     if($validator->fails())
     {
         self::$errors = '<br>* '.implode('<br>* ',$validator->errors()->all());
         return false;
     }
-    elseif(!\Hash::check(\Request::input('current_password'),\App\Auth::password()))
+    elseif(!\Hash::check(\Request::input('current_password'),\App\Auth::currentUser()->password))
     {
         self::$errors = '<br>* Old password incorrect' ;
         return false;
@@ -127,17 +129,19 @@ public function update_password_validate()
 }
 
 
- public function update_picture_validate()
+ public static function update_photo_validate()
 {
+    $input = \Request::only(self::$updatePhotoFillable);
+
     $validate_rules = [
-        'photo' => 'required|image|mimes:jpeg,png|max:5000|dimensions:min_width=200,max_width:200,min_height:200,max_height:200',
+        'photo' => 'required|image|mimes:jpeg,png|max:3000',
 
     ];
 
     $validate_messages =[];
 
 
-    $validator = \Validator::make(\Request::all(),$validate_rules,$validate_messages);
+    $validator = \Validator::make($input,$validate_rules,$validate_messages);
 
     if($validator->fails())
     {

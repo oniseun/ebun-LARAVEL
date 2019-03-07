@@ -6,6 +6,7 @@
 @endsection
 @section('body')
 
+@include('components.checkEmailVerify')
 <!-- page header -->
 <div class="col-md-12">
     

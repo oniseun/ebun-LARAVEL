@@ -14,7 +14,7 @@
          <form  action="/admin/finalize/update/profile/photo" method="post" autocomplete="off" enctype="multipart/form-data">
             @csrf
                 <center>
-                <img class="img-circle" src="/{{ $userInfo->display_picture}}" alt="profile picture">
+                <img class="img-circle" src="/{{ $userInfo->display_picture}}" width="150" height="150" alt="profile picture">
                     
                     <h4 >Select new picture</h4><br>
                     

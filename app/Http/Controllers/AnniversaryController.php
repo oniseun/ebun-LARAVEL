@@ -17,6 +17,18 @@ class AnniversaryController extends Controller
 
     public function info($aID)
     {
+
+        if(!Anniversary::_exist($aID))
+        {
+            if(!Auth::check())
+            {
+                return view('404');
+            }
+            else {
+                return view('404Admin');
+            }
+        }
+
         $aInfo = Anniversary::info($aID);
         $giftItems = Items::data_list($aInfo->id);
         $itemTypes = Items::types();
@@ -35,18 +47,37 @@ class AnniversaryController extends Controller
 
     public function updateForm($aID)
     {
+        if(!Anniversary::data_exist(Auth::id(),$aID))
+        {
+           return view('404Admin');
+            exit;
+        }
+
         $aInfo = Anniversary::info($aID);
         return view('anniversaryUpdateForm',compact('aInfo'));
     }
 
     public function confirmDelete($aID)
     {
+        if(!Anniversary::data_exist(Auth::id(),$aID))
+        {
+           
+                return view('404Admin');
+                exit;
+        }
+
         $aInfo = Anniversary::info($aID);
         return view('confirmDeleteAnniversary',compact('aInfo'));
     }
 
     public function remove()
     {
+            if(!Auth::is_verified())
+        {
+            echo ajax_alert('warning','You have to verify your email before you can remove anniversaries');
+            exit;
+        }
+
         if (\Request::has(Anniversary::$removeAnniversaryFillable) ) {
 
             extract(\Request::only(Anniversary::$removeAnniversaryFillable));
@@ -70,6 +101,12 @@ class AnniversaryController extends Controller
 
     public function update()
     {
+        if(!Auth::is_verified())
+            {
+                echo ajax_alert('warning','You have to verify your email before you can update anniversaries');
+                exit;
+            }
+
         if (\Request::has(Anniversary::$updateAnniversaryFillable) ) {
 
             if(!Anniversary::update_anniversary_validate())
@@ -97,6 +134,12 @@ class AnniversaryController extends Controller
 
     public function add()
     {
+        if(!Auth::is_verified())
+        {
+            echo ajax_alert('warning','You have to verify your email before you can add anniversaries');
+            exit;
+        }
+
         if (\Request::has(Anniversary::$addAnniversaryFillable) ) {
 
             if(!Anniversary::add_anniversary_validate())
@@ -107,6 +150,14 @@ class AnniversaryController extends Controller
             }
 
             extract(\Request::only(Anniversary::$addAnniversaryFillable));
+
+            if( count($anniv_items) < 2 )
+            {
+
+                echo ajax_alert('warning',' You must add at least 2 gift items ');
+                exit;
+            }
+
 
             if(!Anniversary::add(Auth::id()))
             {
@@ -121,7 +172,7 @@ class AnniversaryController extends Controller
             }
         }
         else {
-            echo ajax_alert('warning',' -- Error adding anniversary, please make sure you add gif items before submit  -- ');
+            echo ajax_alert('warning',' -- Error adding anniversary, please make sure you add gift items before submit  -- ');
         }
     }
 

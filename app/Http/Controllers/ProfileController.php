@@ -35,11 +35,19 @@ class ProfileController extends Controller
 
     public function updateInfo(){
 
+        if(!Profile::update_info_validate(Auth::id()))
+        {
+            echo ajax_alert('warning',Profile::$errors);
+            exit;
+            
+        }
+
         $former_email = Auth::currentUser()->email;
+
+        
 
         if (\Request::has(Profile::$updateInfoFillable) && Profile::update_info(Auth::id())) {
 
-            $successMsg = 'Updated profile information  on '.date("d/m/Y h:i:s");
 
             if($former_email !== \Request::only(Profile::$updateInfoFillable)['email'] )
             {
@@ -61,22 +69,18 @@ class ProfileController extends Controller
 
             if(!Profile::update_password_validate())
             {
-                echo ajax_alert('',Profile::$errors);
+                echo ajax_alert('warning',Profile::$errors);
                 exit;
                 
             }
-
+            $email = Auth::currentUser()->email;
             extract(\Request::only(Profile::$updatePasswordFillable));
-            if($new_password !== $confirm_password)
-            {
-                echo ajax_alert('warning',' -- new and confirm password do not match-- ');
-            }
-            else
-             {  
-                 Profile::change_password(Auth::id())   ;     
-                
-                echo ajax_alert('success',' Password Updated Successfully');
-            }
+           
+            Profile::change_password(Auth::id())   ;   
+            Auth::create_session($email); // relogin with new access token
+        
+            echo ajax_alert('success',' Password Updated Successfully');
+            
         }
         else {
             echo ajax_alert('warning',' -- Error updating password  -- ');
@@ -86,7 +90,13 @@ class ProfileController extends Controller
     }
     
     public function updatePhoto(){
-    
+        if(!Profile::update_photo_validate())
+        {
+            return back()->with('failure',Profile::$errors);
+            exit;
+            
+        }
+
         if (\Request::has(Profile::$updatePhotoFillable) && Profile::change_photo(Auth::id())) {
 
             

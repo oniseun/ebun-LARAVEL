@@ -83,22 +83,23 @@ class Items extends Model
     
     
 
-    public function deactivate_item_validate()
+    public static function deactivate_item_validate()
     {
 
-
+        $input = \Request::only(self::$deactivateItemFillable);
         $validate_rules = [
             'activator_name' =>'required|min:5|max:20',
             'activator_email' =>'required|email',
             'activator_phone' =>'nullable|digits_between:5,12',
-            'country_code' =>'required|digits_between:1,4',
-    		'alert_type' => 'required|integer|exists:eb_anniversary_types,id',
+            'country_code' =>'required|integer|exists:eb_countries,phonecode',
+    		'alert_type' => 'required|in:email,sms',
             'anniv_id' =>'required|integer|exists:eb_anniversaries,id',
             'id' =>'required|integer|exists:eb_items,id'
 
     	];
 
-	    $validator = \Validator::make(\Request::all(),$validate_rules,$validate_messages);
+        $validate_messages =[];
+	    $validator = \Validator::make($input,$validate_rules,$validate_messages);
 
 	    if($validator->fails())
 	    {
@@ -114,8 +115,9 @@ class Items extends Model
     }
 
     
-    public function add_item_validate()
+    public static function add_item_validate()
     {
+        $input = \Request::only(self::$addItemFillable);
 
         $validate_rules = [
     		'description' =>'required|min:5',
@@ -126,7 +128,7 @@ class Items extends Model
 
 		$validate_messages =[];
 
-	    $validator = \Validator::make(\Request::all(),$validate_rules,$validate_messages);
+	    $validator = \Validator::make($input,$validate_rules,$validate_messages);
 
 	    if($validator->fails())
 	    {

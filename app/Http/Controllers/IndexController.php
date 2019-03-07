@@ -8,8 +8,14 @@ use App\Index;
 class IndexController extends Controller
 {
     public function home(){
-
-        return view('home');
+        if(!\App\Auth::check())
+        {
+            return view('home');
+        }
+        else {
+            return redirect('/admin/dashboard');
+        }
+        
 
     }
     

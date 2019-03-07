@@ -80,7 +80,6 @@ $itemTypes = App\Items::types();
 
                 <div class="container container-bg" style="margin-top:100px" >
                     <div class="row">
-
 @yield('body')
 </div>
 

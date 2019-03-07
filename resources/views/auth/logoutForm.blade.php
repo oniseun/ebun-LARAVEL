@@ -14,9 +14,9 @@
          <form  action="/admin/finalize/logout" method="post" autocomplete="off">
             @csrf
                 <center>
-                      <img class="img-circle" src="/{{ $userInfo->display_picture }}" alt="profile picture">
+                      <img class="img-circle" src="/{{ $userInfo->display_picture }}"  width="150" height="150"  alt="profile picture">
                     
-                    <h4 >Are you sure you want to Logout of Ebun ?</h4><br>
+                    <h4 >Are you sure you want to Logout ?</h4><br>
                     
                     <button type="submit" class="btn btn-danger btn-lg">
                     <i class="fa fa-power-off"></i> 

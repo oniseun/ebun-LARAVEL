@@ -10,7 +10,7 @@ class Auth extends Model
     public static $errors = [];
     public static $loginFormFillable = ['email','password'];
     public static $registerFormFillable = ['email', 'fullname','password_confirmation','password'];
-    public static $resetPasswordFillable = ['email','reset_code','new_password','password_confirmation'];
+    public static $resetPasswordFillable = ['email','reset_code','new_password','new_password_confirmation'];
     public static $resetLinkFillable = ['email'];
     // login_id
     
@@ -180,7 +180,7 @@ public static function reset_password()
             ->where('email',$data['email'])
             ->where('reset_code',$data['reset_code'])
             ->where('reset_code_expiry','>',now())
-            ->update(['password' => bcrypt($data['password_confirmation'])]);
+            ->update(['password' => bcrypt($data['new_password_confirmation'])]);
     
 
 
@@ -239,7 +239,7 @@ public static function verify_code_exist($verify_code)
 public static function is_verified() 
 {
 
-	return \DB::table('eb_profiles')->where('id',self::id())
+	return \DB::table('eb_profiles')->where('user_id',self::id())
                                     ->where('email_verified','yes')
                                     ->exists();
 
@@ -290,8 +290,10 @@ public function send_sms($phone,$country_code,$message,$sender)
 }
 
 
-public function login_user_validate()
+public static function login_user_validate()
     {
+        $input = \Request::only(self::$loginFormFillable);
+
         $validate_rules = [
     		'email' =>'required|email',
     		'password' =>'required|min:5'
@@ -300,7 +302,7 @@ public function login_user_validate()
 
 		$validate_messages =[];
 
-	    $validator = \Validator::make(\Request::all(),$validate_rules,$validate_messages);
+	    $validator = \Validator::make($input,$validate_rules,$validate_messages);
 
 	    if($validator->fails())
 	    {
@@ -315,8 +317,10 @@ public function login_user_validate()
     }
 
 
-    public function register_user_validate()
+    public static function register_user_validate()
     {
+        $input = \Request::only(self::$registerFormFillable);
+
         $validate_rules = [
     		'fullname' =>'required|min:5|max:30',
     		'email' =>'required|email|unique:eb_profiles,email',
@@ -326,7 +330,7 @@ public function login_user_validate()
 
 		$validate_messages =[];
 
-	    $validator = \Validator::make(\Request::all(),$validate_rules,$validate_messages);
+	    $validator = \Validator::make($input,$validate_rules,$validate_messages);
 
 	    if($validator->fails())
 	    {
@@ -341,9 +345,10 @@ public function login_user_validate()
     }
     
     
-    public function reset_password_validate()
+    public static function reset_password_validate()
     {
-        
+        $input = \Request::only(self::$resetPasswordFillable);
+
         $validate_rules = [
             'email' => 'required|email|exists:eb_profiles,email',
             'reset_code' => 'required|min:5|exists:eb_profiles,reset_code',
@@ -353,7 +358,7 @@ public function login_user_validate()
 		$validate_messages =[];
 
 
-		$validator = \Validator::make(\Request::all(),$validate_rules,$validate_messages);
+		$validator = \Validator::make($input,$validate_rules,$validate_messages);
 
 	    if($validator->fails())
 	    {
