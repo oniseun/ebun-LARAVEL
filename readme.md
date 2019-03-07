@@ -17,7 +17,7 @@ Below is a summary of app features
 - Email notifications (based on deactivation preferences)
 - SMS Notifications (based on deactivation preferences)
 - Feedback Form
-- Profile Management
+- User Profile Management
 
 
 
