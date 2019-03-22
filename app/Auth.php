@@ -48,6 +48,18 @@ class Auth extends Model
     
         }
     
+        public static function rehash_password($email,$password) 
+        {
+                $hashed_password = self::get_password($email);
+
+                if (\Hash::needsRehash($hashed_password))
+                    {
+                        $new_hashed_password = bcrypt($password);
+
+                        \DB::table('eb_profiles')->where('email',$email)->update(['password' => $new_hashed_password]);
+                    }
+                
+            }
         public static function login_user()
         {
             $data = \Request::only(self::$loginFormFillable);
@@ -233,6 +245,7 @@ public static function verify_code_exist($verify_code)
 	return \DB::table('eb_profiles')->where('verify_code',$verify_code)
                                     ->where('verify_code_expiry','>',now())
                                     ->exists();
+    
 
 }
 
@@ -257,10 +270,11 @@ public static function expire_verify_code($verify_code)
 public static function reset_code_expired($reset_code) 
 {
 
-	return \DB::table('eb_profiles')
-							->where('reset_code',$reset_code)
-							->where('reset_code_expiry','<',now())
-							->exists();
+                            
+    $reset_code_exist =\DB::table('eb_profiles')->where('reset_code',$reset_code)->exists() ;
+    $reset_code_expired	= \DB::table('eb_profiles')->where('reset_code',$reset_code)->where('reset_code_expiry','<',now())->exists();
+
+    return !$reset_code_exist || $reset_code_expired ? true : false ;
 
 }
 
