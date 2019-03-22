@@ -92,15 +92,15 @@ class AuthController extends Controller
 
         if(!Auth::login_user_validate())
             {
-                echo ajax_alert('warning',Auth::$errors);
+                return back()->with('failure',Auth::$errors);
                 exit;
                 
             }
-
+        extract(\Request::only(Auth::$loginFormFillable));
         if(Auth::login_user())
         {
             $redirect_url = \Request::has('redirect_url') ? \Request::input('redirect_url') : '/admin/dashboard';
-
+            Auth::rehash_password($email,$password);
             return redirect($redirect_url);;
         }
         else {
