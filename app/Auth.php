@@ -320,7 +320,7 @@ public static function login_user_validate()
 
 	    if($validator->fails())
 	    {
-	    	self::$errors = $validator->errors()->all();
+	    	self::$errors = '<br>* '.implode('<br>* ',$validator->errors()->all());
 	    	return false;
 	    }
 	    else
@@ -348,7 +348,7 @@ public static function login_user_validate()
 
 	    if($validator->fails())
 	    {
-	    	self::$errors = $validator->errors()->all();
+	    	self::$errors = '<br>* '.implode('<br>* ',$validator->errors()->all());
 	    	return false;
 	    }
 	    else
