@@ -12,6 +12,6 @@ class Index extends Model
         $data = \Request::only(self::$contactFormFillable);
         $data['date_created'] = now();
 
-        return \DB::table('eb_feedbacks')->insert($data);
+        $return =  \DB::table('eb_feedbacks')->insert($data);
     }
 }
