@@ -39,6 +39,11 @@ class IndexController extends Controller
         exit;
         }
         if (Index::submit_contact_form()) {
+            $data = \Request::only(Index::$contactFormFillable);
+           $formData = json_decode(json_encode($data), FALSE); // convert array form data to object
+           $subject = "New Message from EbunGift Feedback Form ";
+            \App\Auth::send_fast_mail($subject,env('CONTACT_FORM_MAIL_RECEIVER'),compact('formData'),'email.feedbackForm','email.feedbackForm');
+
             echo ajax_alert('success', "Your message has been sent!!");
         } 
         else {
